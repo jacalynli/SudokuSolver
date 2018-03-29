@@ -13,6 +13,7 @@ public class TestSudoku {
 				"0000"
 				};
 		SudokuBoard board = new SudokuBoard(array);
+		board.setUpList();
 		for (Square[] rows : board.sudokuBoard) {
 			for (Square s : rows) {
 				assertEquals(s.list, "1234");
@@ -21,37 +22,6 @@ public class TestSudoku {
 			
 	}
 	
-	/*
-	@Test
-	public void testListAlmostEmptyBoard() {
-		String[] array = {
-				"1000", 
-				"0000",
-				"0020",
-				"0000"
-				};
-		SudokuBoard board = new SudokuBoard(array);
-		for(int i = 0; i < board.sudokuBoard.length; i++) {
-			for(int j = 0; j < board.sudokuBoard[i].length; j++) {
-				Square s = board.sudokuBoard[i][j];
-				if ((i == 0 && j == 0) || (i == 2 && j == 2)) {
-					assertEquals(s.list, "");
-				} else if ( (i == 0 && j == 2) || (i == 2 && j == 0) ){
-					assertEquals(s.list, "34");
-				} else if (i == 0 || j == 0) {
-					assertEquals(s.list, "234");
-				} else if (i == 2 || j == 2) {
-					assertEquals(s.list, "134");
-				} else if ( (i == 1 || i == 3) && (j == 1 || j == 3) ) {
-					assertEquals(s.list, "1234");
-				} else {
-					System.out.println("Error! Something is wrong with the test!");
-				}
-			}
-		}		
-	}
-	*/
-	
 	@Test
 	public void testListRows() {
 		String[] array = {
@@ -61,6 +31,8 @@ public class TestSudoku {
 				"0000"
 				};
 		SudokuBoard board = new SudokuBoard(array);
+		board.setUpList();
+		board.removeValues();
 		for(int i = 0; i < board.sudokuBoard.length; i++) {
 			for(int j = 0; j < board.sudokuBoard[i].length; j++) {
 				Square s = board.sudokuBoard[i][j];
@@ -73,9 +45,8 @@ public class TestSudoku {
 		}		
 	}
 	
-	/*
 	@Test
-	public void testListRows() {
+	public void testListRowsAndColumns() {
 		String[] array = {
 				"1020", 
 				"0000",
@@ -83,6 +54,8 @@ public class TestSudoku {
 				"0000"
 				};
 		SudokuBoard board = new SudokuBoard(array);
+		board.setUpList();
+		board.removeValues();
 		for(int i = 0; i < board.sudokuBoard.length; i++) {
 			for(int j = 0; j < board.sudokuBoard[i].length; j++) {
 				Square s = board.sudokuBoard[i][j];
@@ -90,19 +63,136 @@ public class TestSudoku {
 					assertEquals(s.list, "34");
 				} else if (i == 0) {
 					assertEquals(s.list, "");
-				} else if (j == 1 || j == 3) {
-					assertEquals(s.list, "1234");
 				} else if (j == 0) {
 					assertEquals(s.list, "234");
 				} else if (j == 2) {
 					assertEquals(s.list, "134");
-				} else {
-					System.out.println("Error! Something is wrong with the test!");
-				}
+				} 
 			}
 		}		
 	}
-	*/
+	
+	@Test
+	public void testListBoxes() {
+		String[] array = {
+				"4000", 
+				"0000",
+				"0030",
+				"0000"
+				};
+		SudokuBoard board = new SudokuBoard(array);
+		board.setUpList();
+		board.removeValues();
+		for(int i = 0; i < board.sudokuBoard.length; i++) {
+			for(int j = 0; j < board.sudokuBoard[i].length; j++) {
+				Square s = board.sudokuBoard[i][j];
+				if (i == 0 && j == 1) {
+					assertEquals(s.list, "123");
+				} else if (i == 1 && (j == 0 || j == 1)) {
+					assertEquals(s.list, "123");
+				} else if (i == 2 && j == 3) {
+					assertEquals(s.list, "124");
+				} else if (i == 3 && (j == 2 || j == 3)) {
+					assertEquals(s.list, "124");
+				} 
+			}
+		}		
+	}
+	
+	@Test
+	public void testListWholeBoard() {
+		String[] array = {
+				"1000", 
+				"0020",
+				"0300",
+				"0000"
+				};
+		SudokuBoard board = new SudokuBoard(array);
+		board.setUpList();
+		board.removeValues();
+		for(int i = 0; i < board.sudokuBoard.length; i++) {
+			for(int j = 0; j < board.sudokuBoard[i].length; j++) {
+				Square s = board.sudokuBoard[i][j];
+				if (i == 0) {
+					if (j == 1) {assertEquals(s.list, "24");}
+					else if (j == 2 || j == 3) {assertEquals(s.list, "34");}
+				} else if (i == 1) {
+					if (j == 0) {assertEquals(s.list, "34");}
+					else if (j == 1) {assertEquals(s.list, "4");}
+					else if (j == 3) {assertEquals(s.list, "134");}
+				} else if (i == 2) {
+					if (j == 0) {assertEquals(s.list, "24");}
+					else if (j == 2) {assertEquals(s.list, "14");}
+					else if (j == 3) {assertEquals(s.list, "124");}
+				} else if (i == 3) {
+					if (j == 0) {assertEquals(s.list, "24");}
+					else if (j == 1) {assertEquals(s.list, "124");}
+					else if (j == 2) {assertEquals(s.list, "134");}
+					else if (j == 3) {assertEquals(s.list, "1234");}
+				} 
+			}
+		}		
+	}
+	
+	@Test
+	public void testListFillOne() {
+		String[] array = {
+				"1000", 
+				"0020",
+				"0300",
+				"0000"
+				};
+		String[] shouldReturn = {
+				"1___",
+				"_42_",
+				"_3__",
+				"____"
+				};
+		SudokuBoard board = new SudokuBoard(array);
+		board.setUpList();
+		board.removeValues();
+		board.fillOne();
+		assertArrayEquals(board.returnBoard(), shouldReturn);
+	}
+	
+	@Test
+	public void testSolveableByFillOne() {
+		String[] array = {
+				"1000", 
+				"0020",
+				"2300",
+				"0000"
+				};
+		String[] shouldReturn = {
+				"1243",
+				"3421",
+				"2314",
+				"4132"
+				};
+		SudokuBoard board = new SudokuBoard(array);
+		board.solve();
+		assertArrayEquals(board.returnBoard(), shouldReturn);
+	}
+	
+	@Test
+	public void testNotSolveableByFillOne() {
+		String[] array = {
+				"1000", 
+				"0020",
+				"0300",
+				"0000"
+				};
+		String[] shouldReturn = {
+				"12__",
+				"3421",
+				"_3__",
+				"_1__"
+				};
+		SudokuBoard board = new SudokuBoard(array);
+		board.solve();
+		assertArrayEquals(board.returnBoard(), shouldReturn);
+	}
+	
 	
 	//Test to make sure that JUnit tests were working
 	@Test
@@ -121,7 +211,7 @@ public class TestSudoku {
 				"3142"
 				};
 		SudokuBoard board = new SudokuBoard(array);
-		assertArrayEquals(board.printBoard(), array);
+		assertArrayEquals(board.returnBoard(), array);
 	}
 	
 	//Tests if the print method replaces 0's with _'s
@@ -140,7 +230,7 @@ public class TestSudoku {
 				"3142"
 				};
 		SudokuBoard board = new SudokuBoard(array);
-		assertArrayEquals(board.printBoard(), shouldPrint);
+		assertArrayEquals(board.returnBoard(), shouldPrint);
 	}
 	
 }
