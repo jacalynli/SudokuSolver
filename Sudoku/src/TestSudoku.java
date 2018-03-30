@@ -189,10 +189,104 @@ public class TestSudoku {
 				"_1__"
 				};
 		SudokuBoard board = new SudokuBoard(array);
+		board.setUpList();
+		board.removeValues();
+		board.fillOne();
+		board.removeValues();
+		board.fillOne();
+		board.removeValues();
+		board.fillOne();
+		assertArrayEquals(board.returnBoard(), shouldReturn);
+	}
+	
+	@Test
+	public void testSolveableFlash1() {
+		String[] array = {
+				"000000901", 
+				"049260583",
+				"378100420",
+				"215403607",
+				"800071235",
+				"037529000",
+				"901748362",
+				"000006000",
+				"060950814"
+				};
+		String[] shouldReturn = {
+				"526834971",
+				"149267583",
+				"378195426",
+				"215483697",
+				"894671235",
+				"637529148",
+				"951748362",
+				"482316759",
+				"763952814",
+				};
+		SudokuBoard board = new SudokuBoard(array);
 		board.solve();
 		assertArrayEquals(board.returnBoard(), shouldReturn);
 	}
 	
+	@Test
+	public void testSolveableFlash2() {
+		String[] array = {
+				"000104890", 
+				"900007521",
+				"018005643",
+				"002916375",
+				"070450206",
+				"306782009",
+				"860020134",
+				"091300702",
+				"043000058"
+				};
+		String[] shouldReturn = {
+				"625134897",
+				"934867521",
+				"718295643",
+				"482916375",
+				"179453286",
+				"356782419",
+				"867529134",
+				"591348762",
+				"243671958",
+				};
+		SudokuBoard board = new SudokuBoard(array);
+		board.solve();
+		assertArrayEquals(board.returnBoard(), shouldReturn);
+	}
+	
+	@Test
+	public void testSolveableExpert1() {
+		String[] array = {
+				"000000090", 
+				"000004200",
+				"079000400",
+				"900240806",
+				"800060000",
+				"000000050",
+				"056803970",
+				"000706004",
+				"007050300"
+				};
+		String[] shouldReturn = {
+				"625134897",
+				"934867521",
+				"718295643",
+				"482916375",
+				"179453286",
+				"356782419",
+				"867529134",
+				"591348762",
+				"243671958",
+				};
+		SudokuBoard board = new SudokuBoard(array);
+		board.solve();
+		board.printBoard();
+		board.printNotes();
+		assertArrayEquals(board.returnBoard(), shouldReturn);
+	}
 	
 	//Test to make sure that JUnit tests were working
 	@Test

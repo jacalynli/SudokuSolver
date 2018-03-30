@@ -35,6 +35,9 @@ public class SudokuBoard {
 		fillOne();
 		removeValues();
 		String[] end = returnBoard();
+		printNotes();
+
+		printBoard();
 		
 		while (!arrayEquals(start, end)) {
 			done = true;
@@ -42,12 +45,18 @@ public class SudokuBoard {
 			fillOne();
 			removeValues();
 			end = returnBoard();
+			printNotes();
+
+			printBoard();
 		}
 		
 		start = end;
 		fillDistinct();
 		removeValues();
 		end = returnBoard();
+		printNotes();
+
+		printBoard();
 		
 		while (!arrayEquals(start, end)) {
 			done = true;
@@ -55,6 +64,8 @@ public class SudokuBoard {
 			fillDistinct();
 			removeValues();
 			end = returnBoard();
+			printNotes();
+			printBoard();
 		}
 		
 		if (!done) {
@@ -156,12 +167,11 @@ public class SudokuBoard {
 						if (sudokuBoard[i][k].value == 0 
 							&& sudokuBoard[i][k].list.indexOf(curr) != -1) {
 							sudokuBoard[i][k].value = Integer.parseInt(curr);
+							sudokuBoard[i][k].list = "";
 						}
 					}
-				} else {
-					l = l.replaceAll(curr, "");
-					continue;
 				}
+				l = l.replaceAll(curr, "");
 			}
 		}
 	}
@@ -179,18 +189,49 @@ public class SudokuBoard {
 						if (sudokuBoard[k][i].value == 0 
 							&& sudokuBoard[k][i].list.indexOf(curr) != -1) {
 							sudokuBoard[k][i].value = Integer.parseInt(curr);
+							sudokuBoard[k][i].list = ""; 
 						}
 					}
-				} else {
-					l = l.replaceAll(curr, "");
-					continue;
 				}
+				l = l.replaceAll(curr, "");
 			}
 		}
 	}
 	
 	public void checkBoxes() {
-		
+		boolean adding = false;
+		for (int boxX = 0; boxX < sudokuBoard.length; boxX += sideLength) {
+			for (int boxY = 0; boxY < sudokuBoard.length; boxY += sideLength) {
+				adding = true;
+				String l = "";
+				for (int i = 0; i < sideLength; i++) {
+					for (int j = 0; j < sideLength; j++) {
+						if (adding) { l += sudokuBoard[i + boxX][j + boxY].list; }
+						if (i == sideLength - 1 && j == sideLength - 1) { 
+							if (!adding) { break; } 
+							adding = false; i = j = 0;}
+						if (!adding) {
+							while(l.length() > 0) {
+								String curr = Character.toString(l.charAt(0));
+								if (l.replaceAll(curr, "").length() == l.length() - 1) {
+									for(int k = 0; k < sudokuBoard.length; k++) {
+										if (sudokuBoard[i + boxX][j + boxY].value == 0 
+											&& sudokuBoard[i + boxX][j + boxY].list.indexOf(curr) != -1) {
+											sudokuBoard[i + boxX][j + boxY].value = Integer.parseInt(curr);
+											sudokuBoard[i + boxX][j + boxY].list = ""; 
+										}
+									}
+								}
+								l = l.replaceAll(curr, "");
+							}
+							adding = true;
+						}
+					}
+					break;
+				}
+			}
+		}
+	}
 		/*
 		for (int i = 0; i < sudokuBoard.length; i++) {
 			String l = "";
@@ -212,7 +253,6 @@ public class SudokuBoard {
 				}
 			}
 		} */
-	}
 	
 	public String[] returnBoard() {
 		String[] output = new String[sudokuBoard.length];
@@ -233,6 +273,7 @@ public class SudokuBoard {
 		for(int i = 0; i < returnBoard().length; i++) {
 			System.out.println(returnBoard()[i]);
 		}
+		System.out.println();
 	}
 	
 	public void printNotes() {
@@ -242,6 +283,7 @@ public class SudokuBoard {
 			}
 			System.out.println();
 		}
+		System.out.println();
 	}
 	
 	public static boolean arrayEquals(String[] l, String[] l2) {
